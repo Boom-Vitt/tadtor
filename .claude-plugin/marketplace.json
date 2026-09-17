@@ -12,8 +12,8 @@
     {
       "name": "tadtor",
       "source": "./",
-      "description": "ตัดต่อวิดีโอภาษาไทย: ตัดช่วงเงียบ, ซับไทย, โมชั่นกราฟิก HyperFrames, คลิปสั้น 9:16",
-      "version": "0.2.0",
+      "description": "ตัดต่อวิดีโอภาษาไทย: ตัดช่วงเงียบ, ซับไทยทีละ 1-2-3 คำ, โมชั่นกราฟิก HyperFrames, คุม CapCut Web, คลิปสั้น 9:16",
+      "version": "0.3.0",
       "license": "MIT",
       "category": "productivity",
       "keywords": [
@@ -22,7 +22,9 @@
         "subtitles",
         "ffmpeg",
         "hyperframes",
-        "motion-graphics"
+        "motion-graphics",
+        "capcut",
+        "word-by-word-captions"
       ]
     }
   ]

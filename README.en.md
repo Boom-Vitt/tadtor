@@ -2,7 +2,7 @@
 
 <img src="assets/banner.png" alt="tadtor — Thai-first video editing plugin for Claude Code and Codex" width="100%">
 
-**Edit videos by chatting in Thai: silence cutting, Thai subtitles, HyperFrames motion graphics, and vertical shorts for Claude Code & Codex.**
+**Edit videos by chatting in Thai: silence cutting, Thai subtitles (incl. CapCut-style 1/2/3-word captions), HyperFrames motion graphics, CapCut Web browser control, and vertical shorts for Claude Code & Codex.**
 
 <img src="assets/demo.gif" width="72%" alt="demo"> <img src="assets/demo-vertical.gif" width="20%" alt="vertical demo">
 
@@ -27,6 +27,7 @@
 | `cut-silence` | Remove silences automatically, plus Thai filler words (เอ่อ/อ่า/อืม) and retakes from word timestamps |
 | `edit-video` | Raw footage → finished MP4, chaining the other skills; pauses only to confirm cuts and review the draft |
 | `thai-motion` | HyperFrames motion graphics: kinetic Thai title, lower third, word-by-word karaoke captions, punch-in zooms with push-in depth, progress bar, CTA, bundled Kanit font |
+| `capcut` | Drive CapCut Web through browser control: upload footage, import Thai subtitles 1/2/3 words at a time, apply styles, Thai fonts and caption animations to all clips. Ships a UI map + JS helpers so the agent doesn't re-explore the page (saves tokens). Export needs the user to sign in |
 | `thai-shorts` | Find highlights in a long video → cut to 9:16 → big captions → Thai titles & hashtags; YouTube chapters |
 
 ## Install

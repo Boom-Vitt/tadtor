@@ -100,6 +100,36 @@ def rewrap(cues, max_chars=30, max_lines=2, strip_fillers=False):
     return out
 
 
+def word_times(start, end, text):
+    """[(token, start)] with time spread by visible width; whitespace tokens take no time.
+    ponytail: proportional timing, not forced alignment; fine for short cues."""
+    toks = tokens(text)
+    total = sum(width(t.strip()) for t in toks) or 1
+    t, out = start, []
+    for tok in toks:
+        out.append((tok, round(t, 3)))
+        t += (end - start) * width(tok.strip()) / total
+    return out
+
+
+def chunk_words(cues, n):
+    """CapCut-style short subtitles: every cue becomes cues of n words (1, 2 or 3)."""
+    out = []
+    for start, end, text in cues:
+        words, i = [], -1
+        for tok, t in word_times(start, end, text.replace("\n", " ")):
+            if tok.strip():
+                words.append([tok, t])
+                i += 1
+            elif words:
+                words[i][0] += tok  # keep the space after a word
+        for k in range(0, len(words), n):
+            group = words[k:k + n]
+            stop = words[k + n][1] if k + n < len(words) else end
+            out.append((group[0][1], stop, "".join(w for w, _ in group).strip()))
+    return out
+
+
 def dump(cues):
     return "\n".join("%d\n%s --> %s\n%s\n" % (i, s_to_ts(a), s_to_ts(b), t)
                      for i, (a, b, t) in enumerate(cues, 1))
@@ -112,9 +142,11 @@ def main():
     p.add_argument("--max-chars", type=int, default=30, help="visible chars per line (default 30, use ~18 for 9:16)")
     p.add_argument("--max-lines", type=int, default=2)
     p.add_argument("--strip-fillers", action="store_true", help="remove เอ่อ/อ่า/อืม")
+    p.add_argument("--words", type=int, choices=(1, 2, 3), help="CapCut-style: 1, 2 or 3 words per subtitle")
     a = p.parse_args()
     with open(a.input, encoding="utf-8-sig") as f:
-        result = dump(rewrap(parse(f.read()), a.max_chars, a.max_lines, a.strip_fillers))
+        cues = rewrap(parse(f.read()), a.max_chars, a.max_lines, a.strip_fillers)
+    result = dump(chunk_words(cues, a.words) if a.words else cues)
     if a.output:
         with open(a.output, "w", encoding="utf-8") as f:
             f.write(result)

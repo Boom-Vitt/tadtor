@@ -1,7 +1,7 @@
 {
   "name": "tadtor",
-  "version": "0.2.0",
-  "description": "Thai-first video editing: silence cutting, Thai subtitles, HyperFrames motion graphics (karaoke captions, titles, lower thirds, zooms), vertical shorts. ตัดต่อวิดีโอภาษาไทยด้วย AI",
+  "version": "0.3.0",
+  "description": "Thai-first video editing: silence cutting, Thai subtitles (1/2/3 words at a time), CapCut Web browser control, HyperFrames motion graphics (karaoke captions, titles, lower thirds, zooms), vertical shorts. ตัดต่อวิดีโอภาษาไทยด้วย AI",
   "author": {
     "name": "Boom-Vitt",
     "url": "https://github.com/Boom-Vitt"
@@ -21,7 +21,9 @@
     "ตัดต่อ",
     "hyperframes",
     "motion-graphics",
-    "karaoke-captions"
+    "karaoke-captions",
+    "capcut",
+    "word-by-word-captions"
   ],
   "skills": "./skills/"
 }

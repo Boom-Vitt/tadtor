@@ -81,6 +81,16 @@ def test_cut_real_video():
     assert os.path.getsize(os.path.join(out, "assets/fonts/Kanit-Bold.ttf")) > 100000
 
 
+def test_chunk_words():
+    cues = [(0.0, 4.0, "สวัสดีค่ะ ทุกคน วันนี้เราจะมาลองตัดต่อ")]
+    for n in (1, 2, 3):
+        out = thai_srt.chunk_words(cues, n)
+        assert out[0][0] == 0.0 and out[-1][1] == 4.0, out
+        assert all(a < b for a, b, _ in out) and all(out[i][1] == out[i + 1][0] for i in range(len(out) - 1))
+        assert "".join(t for _, _, t in out).replace(" ", "") == cues[0][2].replace(" ", "")  # no text lost
+    assert len(thai_srt.chunk_words(cues, 1)) > len(thai_srt.chunk_words(cues, 3))
+
+
 def test_caption_words():
     (a, b, words), = thai_motion.caption_words([(1.0, 3.0, "กิน ข้าว")])
     times = [t for w, t in words if w.strip()]

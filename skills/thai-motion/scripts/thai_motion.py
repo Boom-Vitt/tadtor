@@ -32,18 +32,8 @@ def duration(path):
 
 
 def caption_words(cues):
-    """Per cue: [(word, start)] with times spread by visible width (whitespace gets no time).
-    ponytail: proportional timing, not true word alignment; good enough for karaoke on short cues."""
-    out = []
-    for a, b, text in cues:
-        toks = thai_srt.tokens(text)
-        total = sum(thai_srt.width(t.strip()) for t in toks) or 1
-        t, words = a, []
-        for tok in toks:
-            words.append((tok, round(t, 3)))
-            t += (b - a) * thai_srt.width(tok.strip()) / total
-        out.append((a, b, words))
-    return out
+    """Per cue: (start, end, [(token, start)])."""
+    return [(a, b, thai_srt.word_times(a, b, text)) for a, b, text in cues]
 
 
 def spans(words):
@@ -58,6 +48,8 @@ def build(a):
     per_cue = a.max_chars or (32 if a.vertical else 28)
     with open(a.srt, encoding="utf-8-sig") as f:
         cues = thai_srt.rewrap(thai_srt.parse(f.read()), max_chars=per_cue, max_lines=1)
+    if a.words:
+        cues = thai_srt.chunk_words(cues, a.words)
     caps = caption_words(cues)
     ext = os.path.splitext(a.video)[1]
 
@@ -97,7 +89,7 @@ def build(a):
         "w": w, "h": h, "dur": dur, "ext": ext, "accent": a.accent, "body": "\n    ".join(body),
         "data": json.dumps(data, ensure_ascii=False),
         "title_size": 96 if a.vertical else 120,
-        "cap_size": 76 if a.vertical else 62, "cap_bottom": cap_bottom,
+        "cap_size": (120 if a.vertical else 96) if a.words else (76 if a.vertical else 62), "cap_bottom": cap_bottom,
         "cap_width": 900 if a.vertical else 1500, "lt_bottom": 1500 if a.vertical else 200,
     }
     with open(os.path.join(a.out, "index.html"), "w", encoding="utf-8") as f:
@@ -212,6 +204,7 @@ def main():
     p.add_argument("--cta", help="end call-to-action pill, e.g. กดติดตามด้วยนะ")
     p.add_argument("--accent", default="#FFD23F")
     p.add_argument("--vertical", action="store_true", help="1080x1920 canvas")
+    p.add_argument("--words", type=int, choices=(1, 2, 3), help="CapCut-style captions: 1, 2 or 3 words at a time")
     p.add_argument("--max-chars", type=int, help="visible chars per caption (default 28, vertical 32 over 2 lines)")
     a = p.parse_args()
     a.zoom = [float(x) for x in a.zoom.split(",") if x.strip()]

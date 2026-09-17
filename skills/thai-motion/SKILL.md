@@ -1,6 +1,6 @@
 ---
 name: thai-motion
-description: Add Thai motion graphics to a video with HyperFrames (HTML → MP4) — kinetic Thai title cards, lower thirds (ชื่อ/ตำแหน่ง), TikTok-style karaoke captions that highlight word by word, punch-in zooms and slow push-in for depth, progress bar, and end CTA, rendered with a real Thai font (Kanit). Use when the user asks for โมชั่นกราฟิก, motion graphics, ซับเด้ง/ซับคาราโอเกะ, ไตเติ้ล, lower third, ซูมเข้า, ใส่ลูกเล่น, animated captions, HyperFrames, or wants captions burned without libass.
+description: Add Thai motion graphics to a video with HyperFrames (HTML → MP4) — kinetic Thai title cards, lower thirds (ชื่อ/ตำแหน่ง), TikTok-style karaoke captions that highlight word by word or show 1/2/3 words at a time (ซับทีละคำ), punch-in zooms and slow push-in for depth, progress bar, and end CTA, rendered with a real Thai font (Kanit). Use when the user asks for โมชั่นกราฟิก, motion graphics, ซับเด้ง/ซับคาราโอเกะ, ไตเติ้ล, lower third, ซูมเข้า, ใส่ลูกเล่น, animated captions, HyperFrames, or wants captions burned without libass.
 ---
 
 # โมชั่นกราฟิกภาษาไทย (HyperFrames)
@@ -35,6 +35,7 @@ python3 scripts/thai_motion.py cut.mp4 --srt th.srt -o motion \
   --name "ชื่อคนพูด" --role "ตำแหน่ง" \
   --zoom 7.2,21.5 --cta "กดติดตามด้วยนะ" --accent "#FFD23F"
 # แนวตั้ง TikTok/Reels/Shorts: เพิ่ม --vertical
+# ซับแบบ CapCut ขึ้นทีละ 1, 2 หรือ 3 คำ ตัวใหญ่กลางจอ: เพิ่ม --words 1 (หรือ 2, 3)
 ```
 
 ทุก option ไม่บังคับ ยกเว้น `--srt` และ `-o` ไม่ใส่ `--title` ก็ไม่มีไตเติ้ล ฯลฯ

@@ -4,7 +4,7 @@
 
 <br>
 
-**สั่งตัดต่อวิดีโอเป็นภาษาไทย ให้ AI ตัดช่วงเงียบ ทำซับไทย ใส่โมชั่นกราฟิก และ export คลิปพร้อมโพสต์ให้จบในแชตเดียว**
+**สั่งตัดต่อวิดีโอเป็นภาษาไทย ให้ AI ตัดช่วงเงียบ ทำซับไทย (ทีละ 1-2-3 คำแบบ CapCut) ใส่โมชั่นกราฟิก คุม CapCut ผ่านเบราว์เซอร์ และ export คลิปพร้อมโพสต์ให้จบในแชตเดียว**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-E4572E?style=flat-square)](LICENSE)
 [![Tests](https://img.shields.io/github/actions/workflow/status/Boom-Vitt/tadtor/test.yml?branch=main&style=flat-square&label=tests)](https://github.com/Boom-Vitt/tadtor/actions)
@@ -12,6 +12,7 @@
 [![Codex](https://img.shields.io/badge/Codex-plugin-000000?style=flat-square&logo=openai&logoColor=white)](https://developers.openai.com/codex)
 [![ffmpeg](https://img.shields.io/badge/powered_by-ffmpeg-007808?style=flat-square&logo=ffmpeg&logoColor=white)](https://ffmpeg.org)
 [![HyperFrames](https://img.shields.io/badge/motion-HyperFrames-7C3AED?style=flat-square)](https://github.com/heygen-com/hyperframes)
+[![CapCut](https://img.shields.io/badge/CapCut_Web-browser_control-000000?style=flat-square)](https://www.capcut.com/editor)
 [![GitHub stars](https://img.shields.io/github/stars/Boom-Vitt/tadtor?style=flat-square&color=yellow)](https://github.com/Boom-Vitt/tadtor/stargazers)
 
 **ไทย** · [English](README.en.md)
@@ -61,6 +62,21 @@ flowchart LR
 | `hyperframes check` | ผ่าน, contrast 49/49 |
 | Render 1920×1080 | 28 วินาที, 9.1 MB |
 
+### ซับทีละ 1 · 2 · 3 คำ (แบบ CapCut)
+
+```bash
+python3 skills/thai-subtitles/scripts/thai_srt.py th.srt --words 2 -o capcut-2w.srt
+```
+
+| `--words 1` | `--words 2` | `--words 3` |
+|---|---|---|
+| สวัสดี · ค่ะ · ทุกคน · วันนี้ | สวัสดีค่ะ · ทุกคน วันนี้ · เราจะ | สวัสดีค่ะทุกคน · วันนี้เราจะ · มาลองตัดต่อ |
+
+ตัดคำด้วย PyThaiNLP ไม่ขาดกลางคำ ใช้ได้ 2 ทาง: นำเข้า CapCut (skill `capcut`) หรือเรนเดอร์เองด้วย HyperFrames (`thai_motion.py --words 1`)
+
+> [!NOTE]
+> ทดสอบกับ CapCut Web จริงแล้ว (17 ก.ย. 2026): นำเข้า SRT ทีละ 2 คำ → สไตล์ป้ายเหลือง → ฟอนต์ `ใบจามจุรี-Bd` → แอนิเมชัน `Pop-Up Combo` ใช้กับทุกซับ ทำได้ในโหมด guest แต่ **การ export ต้องล็อกอิน CapCut เอง** (AI จะไม่ล็อกอินแทน)
+
 ### ซับไทยก่อน / หลัง
 
 <table>
@@ -95,6 +111,7 @@ flowchart LR
 | ✂️ **`cut-silence`** | ตัดช่วงเงียบอัตโนมัติ, ตัดคำว่า เอ่อ/อ่า/อืม และประโยคที่พูดซ้ำ | *"ตัดช่วงเงียบกับคำว่าเอ่อออกจาก podcast.mp4"* |
 | 🎬 **`edit-video`** | ทำครบทุกขั้นตอน ตั้งแต่ฟุตเทจดิบจนได้ไฟล์ mp4 พร้อมโพสต์ | *"ตัดต่อ raw.mp4 ให้พร้อมลง YouTube"* |
 | ✨ **`thai-motion`** | โมชั่นกราฟิกด้วย HyperFrames: ไตเติ้ลเด้งทีละคำ, lower third, ซับคาราโอเกะ, ซูม punch-in + push-in มีมิติ, progress bar, CTA | *"ใส่ซับเด้ง ไตเติ้ล กับชื่อคนพูดให้ cut.mp4"* |
+| 🎛️ **`capcut`** | คุม CapCut Web ผ่านเบราว์เซอร์: อัปโหลดคลิป, นำเข้าซับทีละ 1-2-3 คำ, ใส่สไตล์/ฟอนต์ไทย/แอนิเมชันให้ทุกซับ, มีแผนที่ UI + JS helper ให้ AI ไม่ต้องสำรวจหน้าจอใหม่ทุกครั้ง | *"เอาคลิปนี้เข้า CapCut ซับทีละ 2 คำ สไตล์ป้ายเหลือง เด้งขึ้น"* |
 | 📱 **`thai-shorts`** | หาช่วงเด็ดจากคลิปยาว → ตัดเป็น 9:16 → ซับตัวใหญ่ → เขียนแคปชัน/แฮชแท็กไทย, ทำ YouTube chapters | *"หา 3 ช่วงเด็ดจาก live.mp4 ทำเป็น TikTok"* |
 
 > [!TIP]
@@ -142,6 +159,7 @@ cp -r tadtor/skills/* ~/.claude/skills/
 |---|---|---|
 | `ffmpeg` (มี libass สำหรับฝังซับ) | ✅ | `brew install ffmpeg-full` |
 | Python 3.9+ | ✅ | มีอยู่แล้วบน macOS |
+| Browser control (Claude in Chrome / Playwright MCP) | สำหรับ skill `capcut` | ติดตั้ง extension ของเครื่องมือที่ใช้ |
 | Node.js 22+ | สำหรับโมชั่นกราฟิก | `brew install node` (HyperFrames รันผ่าน `npx` ไม่ต้องติดตั้งเพิ่ม) |
 | Whisper ตัวใดตัวหนึ่ง (โมเดล large-v3-turbo ขึ้นไป) | สำหรับถอดเสียง | `brew install whisper-cpp` หรือ `pip install mlx-whisper` |
 | `pythainlp` | แนะนำมาก | `pip install pythainlp` |
@@ -200,6 +218,7 @@ tadtor/
 │   ├── cut-silence/       # SKILL.md + scripts/cut_silence.py
 │   ├── thai-subtitles/    # SKILL.md + scripts/thai_srt.py
 │   ├── thai-motion/       # SKILL.md + scripts/thai_motion.py + assets/fonts (Kanit)
+│   ├── capcut/            # SKILL.md (แผนที่ UI CapCut Web + JS helpers)
 │   └── thai-shorts/       # SKILL.md
 └── tests/test_scripts.py  # python3 tests/test_scripts.py
 ```
@@ -208,6 +227,8 @@ tadtor/
 
 - [x] ซับคาราโอเกะ (ไฮไลต์ทีละคำ) สำหรับคลิปสั้น
 - [x] โมชั่นกราฟิกด้วย HyperFrames
+- [x] ซับทีละ 1-2-3 คำ + คุม CapCut Web ผ่านเบราว์เซอร์
+- [ ] export draft ไปแอป CapCut desktop โดยตรง
 - [ ] จับเวลาต่อคำจาก word timestamps จริง (ตอนนี้ประมาณจากความยาวคำ)
 - [ ] ธีมโมชั่นหลายแบบ + เพลงประกอบพร้อม ducking
 - [ ] แปลซับ ไทย ⇄ อังกฤษ

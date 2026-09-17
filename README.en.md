@@ -2,7 +2,9 @@
 
 <img src="assets/banner.png" alt="tadtor — Thai-first video editing plugin for Claude Code and Codex" width="100%">
 
-**Edit videos by chatting in Thai: Thai subtitles, silence cutting, and vertical shorts for Claude Code & Codex.**
+**Edit videos by chatting in Thai: silence cutting, Thai subtitles, HyperFrames motion graphics, and vertical shorts for Claude Code & Codex.**
+
+<img src="assets/demo.gif" width="72%" alt="demo"> <img src="assets/demo-vertical.gif" width="20%" alt="vertical demo">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-E4572E?style=flat-square)](LICENSE)
 [![Tests](https://img.shields.io/github/actions/workflow/status/Boom-Vitt/tadtor/test.yml?branch=main&style=flat-square&label=tests)](https://github.com/Boom-Vitt/tadtor/actions)
@@ -23,6 +25,8 @@
 |---|---|
 | `thai-subtitles` | Transcribe Thai speech → SRT → word-aware line breaking (`pythainlp`) → proofread → burn in with a Thai font |
 | `cut-silence` | Remove silences automatically, plus Thai filler words (เอ่อ/อ่า/อืม) and retakes from word timestamps |
+| `edit-video` | Raw footage → finished MP4, chaining the other skills; pauses only to confirm cuts and review the draft |
+| `thai-motion` | HyperFrames motion graphics: kinetic Thai title, lower third, word-by-word karaoke captions, punch-in zooms with push-in depth, progress bar, CTA, bundled Kanit font |
 | `thai-shorts` | Find highlights in a long video → cut to 9:16 → big captions → Thai titles & hashtags; YouTube chapters |
 
 ## Install
@@ -39,11 +43,17 @@ codex plugin add tadtor@tadtor
 
 Other agents: copy `skills/*` into that agent's skills folder.
 
-**Requirements:** `ffmpeg` built with libass (`brew install ffmpeg-full`), Python 3.9+, a Whisper CLI (`mlx-whisper` or `whisper-ctranslate2`), and `pythainlp` (recommended).
+**Requirements:** `ffmpeg`, Python 3.9+, Node.js 22+ (HyperFrames via `npx`), a Whisper CLI with a large-v3-turbo or larger model (`whisper-cpp` or `mlx-whisper`), and `pythainlp` (recommended).
+
+Tested end to end on a Mac mini M4: 26.0 s raw clip → 18.8 s after silence cut → Thai transcription in 2.4 s → `hyperframes check` passed → 1080p render in 28 s.
 
 ## Contributing
 
 PRs welcome. Run `python3 tests/test_scripts.py` and `claude plugin validate .` before opening one.
+
+## Credits
+
+[HyperFrames](https://github.com/heygen-com/hyperframes) (HeyGen), [PyThaiNLP](https://github.com/PyThaiNLP/pythainlp), [Kanit](https://github.com/cadsondemak/kanit) font (OFL), [whisper.cpp](https://github.com/ggml-org/whisper.cpp), FFmpeg.
 
 ## License
 

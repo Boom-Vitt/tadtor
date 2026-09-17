@@ -1,23 +1,37 @@
 {
   "name": "tadtor",
-  "version": "0.1.0",
-  "description": "Thai-first video editing skills: Thai subtitles, silence & filler-word cutting, vertical shorts. ตัดต่อวิดีโอภาษาไทยด้วย AI",
-  "author": { "name": "Boom-Vitt", "url": "https://github.com/Boom-Vitt" },
+  "version": "0.2.0",
+  "description": "Thai-first video editing: silence cutting, Thai subtitles, HyperFrames motion graphics (karaoke captions, titles, lower thirds, zooms), vertical shorts. ตัดต่อวิดีโอภาษาไทยด้วย AI",
+  "author": {
+    "name": "Boom-Vitt",
+    "url": "https://github.com/Boom-Vitt"
+  },
   "homepage": "https://github.com/Boom-Vitt/tadtor",
   "repository": "https://github.com/Boom-Vitt/tadtor",
   "license": "MIT",
-  "keywords": ["video", "editing", "thai", "subtitles", "ffmpeg", "whisper", "shorts"],
+  "keywords": [
+    "video",
+    "editing",
+    "thai",
+    "subtitles",
+    "ffmpeg",
+    "whisper",
+    "shorts",
+    "hyperframes",
+    "motion-graphics",
+    "karaoke-captions"
+  ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Tadtor ตัดต่อ",
-    "shortDescription": "ตัดต่อวิดีโอภาษาไทย: ซับไทย ตัดช่วงเงียบ คลิปสั้น",
-    "longDescription": "Thai-first video editing with ffmpeg + Whisper: generate and burn properly line-broken Thai subtitles, cut silences and filler words (เอ่อ อ่า อืม), and turn long videos into 9:16 shorts with Thai captions.",
+    "shortDescription": "ตัดต่อวิดีโอภาษาไทย: ซับไทย โมชั่นกราฟิก คลิปสั้น",
+    "longDescription": "Thai-first video editing with ffmpeg, Whisper and HyperFrames: cut silences and filler words, generate properly line-broken Thai subtitles, add motion graphics (kinetic Thai titles, lower thirds, word-by-word karaoke captions, punch-in zooms), and export 16:9 or 9:16 videos.",
     "developerName": "Boom-Vitt",
     "category": "Productivity",
     "websiteURL": "https://github.com/Boom-Vitt/tadtor",
     "defaultPrompt": [
-      "ทำซับไทยให้ video.mp4 แล้วฝังลงคลิปด้วยฟอนต์ Kanit",
-      "ตัดช่วงเงียบและคำว่าเอ่อออกจาก podcast.mp4",
+      "ตัดต่อ raw.mp4 ให้พร้อมลง YouTube: ตัดช่วงเงียบ ซับไทย ไตเติ้ล",
+      "ใส่ซับเด้งทีละคำกับชื่อคนพูดให้ cut.mp4 แล้ว render แนวตั้ง",
       "หาช่วงเด็ด 3 ช่วงจาก live.mp4 ทำเป็นคลิป TikTok"
     ],
     "brandColor": "#E4572E",

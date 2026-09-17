@@ -4,18 +4,19 @@
 
 <br>
 
-**สั่งตัดต่อวิดีโอเป็นภาษาไทย ให้ AI ทำซับไทย ตัดช่วงเงียบ และทำคลิปสั้นให้จบในแชตเดียว**
+**สั่งตัดต่อวิดีโอเป็นภาษาไทย ให้ AI ตัดช่วงเงียบ ทำซับไทย ใส่โมชั่นกราฟิก และ export คลิปพร้อมโพสต์ให้จบในแชตเดียว**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-E4572E?style=flat-square)](LICENSE)
 [![Tests](https://img.shields.io/github/actions/workflow/status/Boom-Vitt/tadtor/test.yml?branch=main&style=flat-square&label=tests)](https://github.com/Boom-Vitt/tadtor/actions)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-plugin-D97757?style=flat-square&logo=claude&logoColor=white)](https://code.claude.com/docs/en/plugins)
 [![Codex](https://img.shields.io/badge/Codex-plugin-000000?style=flat-square&logo=openai&logoColor=white)](https://developers.openai.com/codex)
 [![ffmpeg](https://img.shields.io/badge/powered_by-ffmpeg-007808?style=flat-square&logo=ffmpeg&logoColor=white)](https://ffmpeg.org)
+[![HyperFrames](https://img.shields.io/badge/motion-HyperFrames-7C3AED?style=flat-square)](https://github.com/heygen-com/hyperframes)
 [![GitHub stars](https://img.shields.io/github/stars/Boom-Vitt/tadtor?style=flat-square&color=yellow)](https://github.com/Boom-Vitt/tadtor/stargazers)
 
 **ไทย** · [English](README.en.md)
 
-[ติดตั้ง](#-ติดตั้ง) · [ความสามารถ](#-ความสามารถ) · [ตัวอย่างคำสั่ง](#-ตัวอย่างคำสั่ง) · [ร่วมพัฒนา](#-ร่วมพัฒนา)
+[เดโม](#-เดโม) · [ติดตั้ง](#-ติดตั้ง) · [ความสามารถ](#-ความสามารถ) · [ตัวอย่างคำสั่ง](#-ตัวอย่างคำสั่ง) · [ร่วมพัฒนา](#-ร่วมพัฒนา)
 
 </div>
 
@@ -30,9 +31,37 @@ AI ตัดต่อทั่วไปถูกออกแบบมาสำ�
 - **ถอดเสียงไม่ได้ `--language th`** เลยกลายเป็นภาษาอังกฤษเมื่อพูดทับศัพท์เยอะ
 - **ตัด "เอ่อ อ่า อืม" ไม่ได้** เพราะไม่รู้จักคำเติมภาษาไทย
 
-tadtor รวมความรู้ตรงนี้ไว้เป็น skills ที่ Claude Code และ Codex ใช้ได้ทันที ข้างในเป็นแค่ `ffmpeg` + Whisper + สคริปต์ Python สั้นๆ ไม่ต้องสมัครบริการ ไม่ต้องอัปโหลดวิดีโอขึ้นคลาวด์
+tadtor รวมความรู้ตรงนี้ไว้เป็น skills ที่ Claude Code และ Codex ใช้ได้ทันที ข้างในเป็นแค่ `ffmpeg` + Whisper + [HyperFrames](https://github.com/heygen-com/hyperframes) + สคริปต์ Python สั้นๆ ทำงานในเครื่องทั้งหมด ไม่ต้องอัปโหลดวิดีโอขึ้นคลาวด์
 
-### ก่อน / หลัง
+## 🎬 เดโม
+
+ทุกอย่างในคลิปนี้ทำโดยปลั๊กอิน จากไฟล์เสียงพูดดิบ 26 วินาทีที่มีช่วงเงียบและคำว่า "เอ่อ":
+
+<table>
+<tr>
+<td width="72%"><img src="assets/demo.gif" alt="เดโมแนวนอน: ไตเติ้ล, lower third, ซับคาราโอเกะภาษาไทย, CTA"></td>
+<td width="28%"><img src="assets/demo-vertical.gif" alt="เดโมแนวตั้ง 9:16"></td>
+</tr>
+</table>
+
+```mermaid
+flowchart LR
+    A[🎥 raw.mp4<br/>26.0 วิ] -->|cut-silence| B[cut.mp4<br/>18.8 วิ]
+    B -->|whisper large-v3-turbo| C[SRT ไทย]
+    C -->|ตรวจคำผิด + pythainlp| D[th.srt]
+    D -->|thai-motion| E[HyperFrames<br/>index.html]
+    B --> E
+    E -->|render 28 วิ| F[✅ final.mp4<br/>1080p / 9:16]
+```
+
+| ขั้น | ผลจริงจากการทดสอบ (Mac mini M4) |
+|---|---|
+| ตัดช่วงเงียบ | 26.0 → 18.8 วินาที (ตัดออก 7.2 วิ) |
+| ถอดเสียงไทย | 2.4 วินาที, แก้คำผิด 6 จุด (เช่น "พาศาทาย" → ภาษาไทย) |
+| `hyperframes check` | ผ่าน, contrast 49/49 |
+| Render 1920×1080 | 28 วินาที, 9.1 MB |
+
+### ซับไทยก่อน / หลัง
 
 <table>
 <tr><th>❌ ตัดบรรทัดตามความยาวอย่างเดียว</th><th>✅ ผ่าน <code>thai_srt.py</code></th></tr>
@@ -64,10 +93,12 @@ tadtor รวมความรู้ตรงนี้ไว้เป็น ski
 |---|---|---|
 | 🎞️ **`thai-subtitles`** | ถอดเสียงไทย → SRT → จัดบรรทัดตามคำ → ตรวจคำผิด → ฝังซับด้วยฟอนต์ไทย | *"ทำซับไทยให้ vlog.mp4 ฟอนต์ Kanit"* |
 | ✂️ **`cut-silence`** | ตัดช่วงเงียบอัตโนมัติ, ตัดคำว่า เอ่อ/อ่า/อืม และประโยคที่พูดซ้ำ | *"ตัดช่วงเงียบกับคำว่าเอ่อออกจาก podcast.mp4"* |
+| 🎬 **`edit-video`** | ทำครบทุกขั้นตอน ตั้งแต่ฟุตเทจดิบจนได้ไฟล์ mp4 พร้อมโพสต์ | *"ตัดต่อ raw.mp4 ให้พร้อมลง YouTube"* |
+| ✨ **`thai-motion`** | โมชั่นกราฟิกด้วย HyperFrames: ไตเติ้ลเด้งทีละคำ, lower third, ซับคาราโอเกะ, ซูม punch-in + push-in มีมิติ, progress bar, CTA | *"ใส่ซับเด้ง ไตเติ้ล กับชื่อคนพูดให้ cut.mp4"* |
 | 📱 **`thai-shorts`** | หาช่วงเด็ดจากคลิปยาว → ตัดเป็น 9:16 → ซับตัวใหญ่ → เขียนแคปชัน/แฮชแท็กไทย, ทำ YouTube chapters | *"หา 3 ช่วงเด็ดจาก live.mp4 ทำเป็น TikTok"* |
 
 > [!TIP]
-> skills ทำงานต่อกันได้ เช่น *"ตัดช่วงเงียบ แล้วทำซับไทยฝังลงไป แล้วตัดเป็นคลิปสั้น 2 คลิป"*
+> พิมพ์สั้นๆ ว่า *"ตัดต่อคลิปนี้ให้หน่อย"* ก็พอ skill `edit-video` จะเรียก skill อื่นต่อกันเอง และหยุดถามแค่ 2 จุด คือตอนยืนยันส่วนที่จะตัด และตอนดู draft
 
 ## 📦 ติดตั้ง
 
@@ -111,9 +142,10 @@ cp -r tadtor/skills/* ~/.claude/skills/
 |---|---|---|
 | `ffmpeg` (มี libass สำหรับฝังซับ) | ✅ | `brew install ffmpeg-full` |
 | Python 3.9+ | ✅ | มีอยู่แล้วบน macOS |
-| Whisper ตัวใดตัวหนึ่ง | สำหรับถอดเสียง | `pip install mlx-whisper` (Apple Silicon) หรือ `pip install whisper-ctranslate2` |
+| Node.js 22+ | สำหรับโมชั่นกราฟิก | `brew install node` (HyperFrames รันผ่าน `npx` ไม่ต้องติดตั้งเพิ่ม) |
+| Whisper ตัวใดตัวหนึ่ง (โมเดล large-v3-turbo ขึ้นไป) | สำหรับถอดเสียง | `brew install whisper-cpp` หรือ `pip install mlx-whisper` |
 | `pythainlp` | แนะนำมาก | `pip install pythainlp` |
-| ฟอนต์ไทย เช่น Kanit, Prompt, Sarabun | สำหรับฝังซับ | [Google Fonts](https://fonts.google.com/?subset=thai) |
+| ฟอนต์ไทย | มากับปลั๊กอินแล้ว | ฟอนต์ Kanit (OFL) สำหรับโมชั่นกราฟิก |
 
 > [!NOTE]
 > ไม่ต้องติดตั้งเองทั้งหมดก็ได้ AI จะเช็กและบอกว่าขาดอะไรตอนเริ่มใช้งาน
@@ -133,6 +165,10 @@ podcast-ep12.mp4 ยาว 1 ชั่วโมง หาช่วงที่�
 ```
 
 ```text
+ใส่ไตเติ้ล "รีวิว iPhone 18" ชื่อ "บูม" ตำแหน่ง "Tech Reviewer" ซับเด้งสีเหลือง แล้ว render แนวตั้งด้วย
+```
+
+```text
 ทำ YouTube chapters ภาษาไทยให้ lecture.mp4
 ```
 
@@ -145,6 +181,11 @@ python3 skills/thai-subtitles/scripts/thai_srt.py in.srt -o out.srt --max-chars 
 # ดูว่าจะตัดช่วงเงียบตรงไหน แล้วค่อย render
 python3 skills/cut-silence/scripts/cut_silence.py in.mp4 --dry-run
 python3 skills/cut-silence/scripts/cut_silence.py in.mp4 -o out.mp4 --noise -35 --pad 0.15
+
+# สร้างโปรเจกต์โมชั่นกราฟิก แล้ว render ด้วย HyperFrames
+python3 skills/thai-motion/scripts/thai_motion.py out.mp4 --srt th.srt -o motion \
+  --title "หัวเรื่อง" --name "ชื่อ" --role "ตำแหน่ง" --zoom 7.2,15 --cta "กดติดตามด้วยนะ"
+cd motion && npx hyperframes check && npx hyperframes render --quality high --output final.mp4
 ```
 
 ## 🗂️ โครงสร้าง
@@ -155,15 +196,20 @@ tadtor/
 ├── .codex-plugin/         # manifest สำหรับ Codex
 ├── .agents/plugins/       # marketplace สำหรับ Codex
 ├── skills/
-│   ├── thai-subtitles/    # SKILL.md + scripts/thai_srt.py
+│   ├── edit-video/        # SKILL.md (ทำครบทุกขั้นตอน)
 │   ├── cut-silence/       # SKILL.md + scripts/cut_silence.py
+│   ├── thai-subtitles/    # SKILL.md + scripts/thai_srt.py
+│   ├── thai-motion/       # SKILL.md + scripts/thai_motion.py + assets/fonts (Kanit)
 │   └── thai-shorts/       # SKILL.md
 └── tests/test_scripts.py  # python3 tests/test_scripts.py
 ```
 
 ## 🗺️ แผนต่อไป
 
-- [ ] ซับคาราโอเกะ (ไฮไลต์ทีละคำ) สำหรับคลิปสั้น
+- [x] ซับคาราโอเกะ (ไฮไลต์ทีละคำ) สำหรับคลิปสั้น
+- [x] โมชั่นกราฟิกด้วย HyperFrames
+- [ ] จับเวลาต่อคำจาก word timestamps จริง (ตอนนี้ประมาณจากความยาวคำ)
+- [ ] ธีมโมชั่นหลายแบบ + เพลงประกอบพร้อม ducking
 - [ ] แปลซับ ไทย ⇄ อังกฤษ
 - [ ] ตรวจจับใบหน้าเพื่อ crop 9:16 อัตโนมัติ
 - [ ] export timeline ไป DaVinci Resolve / Premiere (EDL/FCPXML)
@@ -196,9 +242,16 @@ skill ที่ดีควร: สั้น, บอกคำสั่งที�
   <img src="https://contrib.rocks/image?repo=Boom-Vitt/tadtor" alt="contributors">
 </a>
 
+## 🙏 เครดิต
+
+- [HyperFrames](https://github.com/heygen-com/hyperframes) โดย HeyGen: เรนเดอร์วิดีโอจาก HTML
+- [PyThaiNLP](https://github.com/PyThaiNLP/pythainlp): ตัดคำภาษาไทย
+- [Kanit](https://github.com/cadsondemak/kanit) โดย Cadson Demak: ฟอนต์ไทย (SIL OFL 1.1)
+- [whisper.cpp](https://github.com/ggml-org/whisper.cpp), [FFmpeg](https://ffmpeg.org)
+
 ## 📄 License
 
-[MIT](LICENSE) ใช้ แก้ แจก ได้ฟรี รวมถึงงานเชิงพาณิชย์
+[MIT](LICENSE) ใช้ แก้ แจก ได้ฟรี รวมถึงงานเชิงพาณิชย์ (ฟอนต์ Kanit ใช้สัญญาอนุญาต [OFL](skills/thai-motion/assets/fonts/OFL.txt))
 
 <div align="center">
 <sub>ทำด้วย ❤️ เพื่อคนทำคอนเทนต์ไทย · ถ้ามีประโยชน์ ฝากกด ⭐ ด้วยนะครับ</sub>

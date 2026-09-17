@@ -17,7 +17,7 @@ ffmpeg -hide_banner -filters | grep -E " (subtitles|ass) "   # ต้องม�
 python3 -c "import pythainlp" 2>/dev/null || pip install pythainlp   # ตัดคำไทย
 ```
 
-ถ้า ffmpeg ไม่มี filter `subtitles` (ไม่ได้ build กับ libass) บน macOS ให้แนะนำ `brew install ffmpeg-full` แทนการติดตั้งเองแบบเงียบๆ
+ถ้า ffmpeg ไม่มี filter `subtitles` (ไม่ได้ build กับ libass) มีสองทาง: แนะนำ `brew install ffmpeg-full` (macOS) หรือฝังซับด้วย HyperFrames ผ่าน skill `thai-motion` (ไม่ต้องใช้ libass และได้ซับแบบเด้งทีละคำด้วย)
 
 ### 2. ถอดเสียง → SRT
 
@@ -31,12 +31,15 @@ ffmpeg -i input.mp4 -vn -ac 1 -ar 16000 audio.wav
 
 | เครื่องมือ | คำสั่ง |
 |---|---|
-| `mlx-whisper` (Apple Silicon, เร็วสุดบน Mac) | `mlx_whisper audio.wav --model mlx-community/whisper-large-v3-turbo --language th --output-format srt --word-timestamps True` |
+| `whisper-cli` (whisper.cpp, `brew install whisper-cpp`) | `whisper-cli -m ggml-large-v3-turbo-q5_0.bin -l th -f audio.wav -osrt -of audio` |
+| `npx hyperframes transcribe` (ใช้ whisper.cpp ข้างใน) | `npx hyperframes transcribe audio.wav --model large-v3 --language th --to srt -o audio.srt` |
+| `mlx-whisper` (Apple Silicon) | `mlx_whisper audio.wav --model mlx-community/whisper-large-v3-turbo --language th --output-format srt --word-timestamps True` |
 | `whisper-ctranslate2` / faster-whisper (NVIDIA/CPU) | `whisper-ctranslate2 audio.wav --model large-v3 --language th --output_format srt --word_timestamps True` |
 | `openai-whisper` | `whisper audio.wav --model large-v3 --language th --output_format srt` |
 
 - **ต้องใส่ `--language th` เสมอ** ไม่งั้นช่วงที่พูดทับศัพท์อังกฤษเยอะจะถูกตีเป็นภาษาอังกฤษ
 - งานที่เน้นความแม่นภาษาไทย แนะนำโมเดล fine-tune ภาษาไทย เช่น `biodatlab/whisper-th-large-v3-combined` (ใช้ผ่าน transformers)
+- โมเดลเล็ก (`small`, `base`, `*.en`) ใช้กับภาษาไทยไม่ได้จริง ขั้นต่ำ `large-v3-turbo` (ไฟล์ q5_0 ~550 MB, ถอด 19 วินาทีเสร็จใน ~2.5 วินาทีบน M4)
 - ถ้าผู้ใช้ให้รายชื่อเฉพาะ (ชื่อคน/แบรนด์/ศัพท์เทคนิค) ส่งเป็น `--initial_prompt "..."` ช่วยให้สะกดถูก
 
 ### 3. จัดบรรทัดซับไทย
@@ -53,6 +56,7 @@ python3 scripts/thai_srt.py audio.srt -o th.srt --max-chars 30 --strip-fillers
 ### 4. ตรวจทานคำผิด (สำคัญ)
 
 อ่าน `th.srt` แล้วแก้เองก่อนฝัง อย่าแก้ timestamp:
+- ตัวอย่างที่เจอจริงตอนทดสอบ (large-v3-turbo): ภาษาไทย→"พาศาทาย", ซับไทย→"ซับทาย", ช่วงเงียบ→"ช่วงเมียบ", กราฟิก→"กลาสกิก", ปลั๊กอิน→"ปลักอิน", ผู้พูดหญิงแต่ถอดเป็น "ครับ", คำอังกฤษอย่าง "AI" หายไปเลย
 - คำพ้องเสียงที่ Whisper ชอบผิด: คะ/ค่ะ, นะคะ/นะค่ะ, ทำไม/ทำไหม, อนุญาต/อนุญาติ, ศัพท์อังกฤษที่ถอดเป็นไทย (เช่น "เอไอ" → "AI" ถ้าผู้ใช้ต้องการ)
 - ตัวเลข: ใช้เลขอารบิกเป็นค่าเริ่มต้น
 - ไม่ต้องใส่ ฯลฯ หรือจุดท้ายประโยค ซับไทยไม่นิยมใส่ `.`

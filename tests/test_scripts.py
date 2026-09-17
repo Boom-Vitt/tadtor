@@ -6,8 +6,10 @@ import sys
 import tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path[:0] = [os.path.join(ROOT, "skills/thai-subtitles/scripts"), os.path.join(ROOT, "skills/cut-silence/scripts")]
+sys.path[:0] = [os.path.join(ROOT, "skills/thai-subtitles/scripts"), os.path.join(ROOT, "skills/cut-silence/scripts"),
+                os.path.join(ROOT, "skills/thai-motion/scripts")]
 import cut_silence  # noqa: E402
+import thai_motion  # noqa: E402
 import thai_srt  # noqa: E402
 
 SRT = """1
@@ -61,6 +63,29 @@ def test_cut_real_video():
                     src, "-o", dst, "--pad", "0.1"], check=True, capture_output=True)
     got = cut_silence.duration(dst)
     assert 2.0 < got < 2.6, got
+
+    # motion project from the cut clip; rendering needs Chrome so CI only checks the generated HTML
+    srt = os.path.join(d, "th.srt")
+    with open(srt, "w", encoding="utf-8") as f:
+        f.write("1\n00:00:00,000 --> 00:00:02,000\nสวัสดีค่ะ ทุกคน<b>\n")
+    out = os.path.join(d, "motion")
+    subprocess.run([sys.executable, os.path.join(ROOT, "skills/thai-motion/scripts/thai_motion.py"), dst, "--srt", srt,
+                    "-o", out, "--title", "ทดสอบ", "--name", "บูม", "--zoom", "0.5", "--cta", "กดติดตาม", "--vertical"],
+                   check=True, capture_output=True)
+    with open(os.path.join(out, "index.html"), encoding="utf-8") as f:
+        page = f.read()
+    for needle in ('data-composition-id="main"', 'data-width="1080"', 'id="footage-audio"', 'id="cap-0"',
+                   'id="lt"', 'id="cta"', '&lt;b&gt;', 'window.__timelines["main"] = tl'):
+        assert needle in page, needle
+    assert "<b>" not in page.split("<body>")[1]  # SRT text is escaped
+    assert os.path.getsize(os.path.join(out, "assets/fonts/Kanit-Bold.ttf")) > 100000
+
+
+def test_caption_words():
+    (a, b, words), = thai_motion.caption_words([(1.0, 3.0, "กิน ข้าว")])
+    times = [t for w, t in words if w.strip()]
+    assert times[0] == 1.0 and times == sorted(times) and times[-1] < 3.0, words
+    assert "".join(w for w, _ in words) == "กิน ข้าว"
 
 
 if __name__ == "__main__":

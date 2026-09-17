@@ -1,0 +1,11 @@
+{
+  "name": "tadtor",
+  "version": "0.1.0",
+  "description": "Thai-first video editing skills: Thai subtitles, silence & filler-word cutting, vertical shorts. ตัดต่อวิดีโอภาษาไทยด้วย AI",
+  "author": { "name": "Boom-Vitt", "url": "https://github.com/Boom-Vitt" },
+  "homepage": "https://github.com/Boom-Vitt/tadtor",
+  "repository": "https://github.com/Boom-Vitt/tadtor",
+  "license": "MIT",
+  "keywords": ["video", "editing", "thai", "subtitles", "ffmpeg", "whisper", "shorts", "ซับไทย", "ตัดต่อ"],
+  "skills": "./skills/"
+}

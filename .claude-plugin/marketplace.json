@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "tadtor",
+  "owner": { "name": "Boom-Vitt", "url": "https://github.com/Boom-Vitt" },
+  "metadata": { "description": "Thai-first video editing plugin for Claude Code" },
+  "plugins": [
+    {
+      "name": "tadtor",
+      "source": "./",
+      "description": "ซับไทย, ตัดช่วงเงียบ/คำว่าเอ่อ, ทำคลิปสั้น 9:16 จากวิดีโอยาว",
+      "version": "0.1.0",
+      "license": "MIT",
+      "category": "productivity",
+      "keywords": ["video", "thai", "subtitles", "ffmpeg"]
+    }
+  ]
+}

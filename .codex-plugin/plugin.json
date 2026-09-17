@@ -1,0 +1,27 @@
+{
+  "name": "tadtor",
+  "version": "0.1.0",
+  "description": "Thai-first video editing skills: Thai subtitles, silence & filler-word cutting, vertical shorts. ตัดต่อวิดีโอภาษาไทยด้วย AI",
+  "author": { "name": "Boom-Vitt", "url": "https://github.com/Boom-Vitt" },
+  "homepage": "https://github.com/Boom-Vitt/tadtor",
+  "repository": "https://github.com/Boom-Vitt/tadtor",
+  "license": "MIT",
+  "keywords": ["video", "editing", "thai", "subtitles", "ffmpeg", "whisper", "shorts"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Tadtor ตัดต่อ",
+    "shortDescription": "ตัดต่อวิดีโอภาษาไทย: ซับไทย ตัดช่วงเงียบ คลิปสั้น",
+    "longDescription": "Thai-first video editing with ffmpeg + Whisper: generate and burn properly line-broken Thai subtitles, cut silences and filler words (เอ่อ อ่า อืม), and turn long videos into 9:16 shorts with Thai captions.",
+    "developerName": "Boom-Vitt",
+    "category": "Productivity",
+    "websiteURL": "https://github.com/Boom-Vitt/tadtor",
+    "defaultPrompt": [
+      "ทำซับไทยให้ video.mp4 แล้วฝังลงคลิปด้วยฟอนต์ Kanit",
+      "ตัดช่วงเงียบและคำว่าเอ่อออกจาก podcast.mp4",
+      "หาช่วงเด็ด 3 ช่วงจาก live.mp4 ทำเป็นคลิป TikTok"
+    ],
+    "brandColor": "#E4572E",
+    "logo": "./assets/logo.png",
+    "composerIcon": "./assets/logo.png"
+  }
+}
